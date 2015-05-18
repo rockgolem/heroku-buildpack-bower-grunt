@@ -18,48 +18,19 @@ LP_DIR=`cd $(dirname $0); cd ..; pwd`
 # Assume vendored node path
 PATH=$BUILD_DIR/vendor/node/bin:$PATH
 
-function indent() {
-  c='s/^/       /'
-  case $(uname) in
-    Darwin) sed -l "$c";;
-    *)      sed -u "$c";;
-  esac
-}
-
-# cache directories
-CACHE_STORE_DIR="$CACHE_DIR/node_modules/$NODE_VERSION/$NPM_VERSION"
-CACHE_TARGET_DIR="$BUILD_DIR/node_modules"
-
-# install gems
-echo "-----> Installing gems"
-export GEM_HOME=$BUILD_DIR/.gem/ruby/1.9.1
-PATH="$GEM_HOME/bin:$PATH"
-
-HOME=$BUILD_DIR gem install --remote --no-rdoc --no-ri compass --version "1.0.1"
-HOME=$BUILD_DIR gem install --remote --no-rdoc --no-ri animation --version "0.1.alpha.3"
-
-# install dependencies with npm
-echo "-----> Installing dependencies with npm"
-cd $BUILD_DIR
-npm install
-echo "Dependencies installed" | indent
-
-echo "-----> Building runtime environment"
-#mkdir -p $BUILD_DIR/.profile.d
-#echo "export PATH=\"\$HOME/bin:\$HOME/node_modules/.bin:\$PATH\"" > $BUILD_DIR/.profile.d/nodejs.sh
-#echo "export PATH=\"\$HOME/.gem/ruby/1.9.1/bin:\$PATH\"" > $BUILD_DIR/.profile.d/ruby.sh
-
 if [ -f $BUILD_DIR/bower.json ]; then
+  echo "-----> Found bower file, installing bower."
   npm install bower
-  echo "-----> Found bower file, running bower install"
+  echo "-----> Running bower install"
   $BUILD_DIR/node_modules/bower/bin/bower install
 else
   echo "-----> No bower file found."
 fi
 
 if [ -f $BUILD_DIR/grunt.js ] || [ -f $BUILD_DIR/Gruntfile.js ] || [ -f $BUILD_DIR/Gruntfile.coffee ] || [ -f $BUILD_DIR/gruntfile.js ]; then
+  echo "-----> Found Gruntfile, installing grunt-cli."
   npm install grunt-cli
-  echo "-----> Found Gruntfile, running grunt heroku task"
+  echo "-----> Running grunt heroku task"
   $BUILD_DIR/node_modules/grunt-cli/bin/grunt heroku
 else
   echo "-----> No Gruntfile (grunt.js, Gruntfile.js, Gruntfile.coffee) found"

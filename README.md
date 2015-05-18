@@ -1,68 +1,63 @@
-## Heroku buildpack: Grunt, Compass, and Bower asset pipeline
-============================================
+## Heroku buildpack: Grunt and Bower asset pipeline
 
-Code derived from [nbcnews's buildpack](nbcnews/heroku-buildpack-nodejs-grunt-compass).
+Rockgolem's buildpack for running our asset pipeline.
 
-This is a fork of [Heroku's official Node.js buildpack](https://github.com/heroku/heroku-buildpack-nodejs) with support for [Grunt](http://gruntjs.com/), [Compass](http://compass-style.org/), and [Bower](http://bower.io/). This buildpack could be modified for specific needs of projects that I am working on, so please fork for stability.
+This is a fork of [Heroku's official Node.js buildpack](https://github.com/heroku/heroku-buildpack-nodejs) with support for [Grunt](http://gruntjs.com/) and [Bower](http://bower.io/).
 
-This buildpack also assumes you are using [Heroku buildpack multi](https://github.com/ddollar/heroku-buildpack-multi).
-
-Compass will install, and if available, grunt and bower will run installations.
+> This buildpack assumes you are using [Heroku buildpack multi](https://github.com/ddollar/heroku-buildpack-multi).
 
 Usage
 -----
 
-Create a new app with this buildpack:
+* Add this buildpack to your current app:
 
-    heroku create myapp --buildpack heroku config:add BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git
+```
+heroku config:add BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git
+```
 
-Or add this buildpack to your current app:
+* Create your Node.js app and add a Gruntfile named `gruntfile.js` with a `heroku` task:
 
-    heroku config:add BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git
-    
-Or change the buildpack for a specific app:
+```
+grunt.registerTask('heroku', 'clean less mincss');
+```
 
-    heroku config:add BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git --app APP_NAME
+* Create a `.buildpacks` file and add the following (or add to it):
 
-Create your Node.js app and add a Gruntfile named `gruntfile.js` with a `heroku` task:
-
-    grunt.registerTask('heroku', 'clean less mincss');
-
-Create a `.buildpacks` file and add the following (or add to it):
-
-    https://github.com/heroku/heroku-buildpack-nodejs.git
-    https://github.com/cjsaylor/heroku-buildpack-grunt-compass-bower.git
+```
+https://github.com/heroku/heroku-buildpack-nodejs.git
+https://github.com/rockgolem/heroku-buildpack-bower-grunt.git
+```
 
 
 Don't forget to add grunt to your dependencies in `package.json`. If your grunt tasks depend on other pre-defined tasks make sure to add these dependencies as well:
 
-    "devDependencies": {
-        ...
-        "grunt": "*",
-        "grunt-contrib": "*",
-    }
+```json
+"devDependencies": {
+    "grunt": "*",
+    "grunt-contrib": "*",
+}
+```
 
 Push to heroku
 
-    git push heroku master
-    ...
-    =====> Heroku receiving push
-    =====> Fetching custom buildpack... done
-    -----> Node.js app detected
-    -----> Building runtime environment
-    -----> Found Bower file, running bower installation.
-    ...
-    -----> Found gruntfile, running grunt heroku task
-    Running "heroku" task
-    ...
-    -----> Discovering process types
+```
+$ git push heroku master
+...
+=====> Heroku receiving push
+=====> Fetching custom buildpack... done
+-----> Node.js app detected
+-----> Found Bower file, running bower installation.
+...
+-----> Found gruntfile, running grunt heroku task
+Running "heroku" task
+...
+-----> Discovering process types
+```
 
 Further Information
 -------------------
 
 * [Heroku: Buildpacks](https://devcenter.heroku.com/articles/buildpacks)
-* [Heroku: Getting Started with Node.js](https://devcenter.heroku.com/articles/nodejs)
 * [Buildpacks: Heroku for Everything](http://blog.heroku.com/archives/2012/7/17/buildpacks/)
 * [Grunt: a task-based command line build tool for JavaScript projects](http://gruntjs.com/)
 * [Bower](http://bower.io)
-* [Compass](http://compass-style.org)
