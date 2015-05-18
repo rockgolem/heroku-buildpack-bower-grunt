@@ -18,6 +18,8 @@ LP_DIR=`cd $(dirname $0); cd ..; pwd`
 # Assume vendored node path
 PATH=$BUILD_DIR/vendor/node/bin:$PATH
 
+cd $BUILD_DIR
+
 if [ -f $BUILD_DIR/bower.json ]; then
   echo "-----> Found bower file, installing bower."
   npm install bower
